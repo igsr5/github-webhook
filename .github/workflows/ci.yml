@@ -17,16 +17,17 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20'
+          node-version-file: .node-version
       - name: Install dependencies
         run: yarn install --frozen-lockfile
-      - name: Cache dependencies
+      - name: Cache node_modules
+        id: cache
         uses: actions/cache@v3
         with:
-          path: .yarn/cache
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
+          path: node_modules
+          key: ${{ runner.os }}-node_modules-${{ hashFiles('**/yarn.lock') }}
+      - name: Set cache-key output
+        run: echo "cache-key=${{ runner.os }}-node_modules-${{ hashFiles('**/yarn.lock') }}" >> $GITHUB_ENV
 
   test:
     needs: install
@@ -37,7 +38,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20'
+          node-version-file: .node-version
       - name: Run tests
         run: yarn test
 
@@ -51,6 +52,11 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '20'
+      - name: Restore Cache
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ needs.install.outputs.cache-key }}
       - name: Run linter
         run: yarn lint
 
@@ -63,7 +69,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20'
+          node-version-file: .node-version
       - name: Run typecheck
         run: yarn typecheck
 
@@ -76,6 +82,6 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20'
+          node-version-file: .node-version
       - name: Build project
         run: yarn build
