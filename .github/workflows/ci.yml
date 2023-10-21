@@ -36,6 +36,11 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '20'
+      - name: cache node_modules
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
       - run: yarn install --immutable
       - name: Run linter
         run: yarn lint
@@ -49,6 +54,11 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version-file: .node-version
+      - name: cache node_modules
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
       - run: yarn install --immutable
       - name: Run typecheck
         run: yarn typecheck
@@ -62,6 +72,11 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version-file: .node-version
+      - name: cache node_modules
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
       - run: yarn install --immutable
       - name: Build project
         run: yarn build
