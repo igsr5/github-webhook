@@ -9,3 +9,4 @@
 # Documentation here: https://yarnpkg.com/features/zero-installs
 #.pnp.*
 node_modules
+dist
